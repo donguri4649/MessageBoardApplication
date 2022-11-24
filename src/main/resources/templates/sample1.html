@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="css/sample1.css">
+<script src="js/common.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/jquery-3.6.1.min.js"></script>
+<script src="ckeditor5-build-classic/ckeditor.js"></script>
+</head>
+<body>
+	<form id="form01" th:action="@{/}" method="" name="model">
+	<!-- hidden項目 -->
+	<!-- //操作区分(1:新規登録)(2:ページング)(3:削除)(4:参照) -->
+	<input type="hidden" name="operCategory" id="operCategory" th:value="${operCategory}">
+	<input type="hidden" name="referenceSelect" id="referenceSelect" th:value="${id}">
+	<input type="hidden" name="updateFlg" id="updateFlg" th:value="${updateFlg}">
+	<!-- hidden項目 -->
+		<h3 th:text="${title}">タイトル</h3>
+		<ul>
+			<li><label for="serchChat">宛先 ：</label> 
+			<select class="page-pulldown pageStyle2" name="selectUser" id="selectUser">
+					<option th:each="obj : ${Userlist}" align="center"
+						th:selected="${dispUser} == ${obj.UserlistMap}">
+						<p th:text="${obj.UserlistMap}"></p>
+					</option>
+			</select>
+			</li>
+		</ul>
+		<h1>伝言の内容：</h1>
+		<textarea th:text="${chat}" name="chat" id="chat" th:value="${chat}" maxlength=2000></textarea>
+		<div class="metdata">
+			作成日：<p th:text="${today}"></p>
+			作成者：<p th:text="${creator}"></p>
+		</div>
+		<div id="sampleFooter" class="footerStyle">
+			<button id="update" onclick="Update()">更新</button>
+			<button onclick="Cancel()">キャンセル</button>
+		</div>
+	</form>
+</body>
+</html>

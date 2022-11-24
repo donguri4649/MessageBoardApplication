@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>伝言板</title>
+<link rel="stylesheet" href="css/sample1.css">
+<link rel="stylesheet" href="css/jquery-ui.min.css">
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery-3.6.1.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/sample1.js"></script>
+<script src="ckeditor5-build-classic/ckeditor.js"></script>
+<script>
+	$(function() {
+		$(".datepicker").datepicker();
+	});
+</script>
+</head>
+<body>
+ <header>
+    <h1 class="title">伝言板</h1>
+    <nav class="nav">
+      <ul class="menu-group">
+      <form th:action="@{/logout}" method="post">
+        <input type="submit" value="ログアウト" onclick="logout()"/>
+	  </form>
+	  <form th:action="@{/janitorOffice}" method="post" id="form02" name="model">
+        <input type="button" value="管理人室" onclick="janitorOffice()"/>
+        <input type="hidden" name="userName" id="userName" th:value="${janitorUserName}">
+        <input type="hidden" name="userId" id="userId" th:value="${janitorUserId}">
+	  </form>
+      </ul>
+    </nav>
+  </header>
+	<form id="form01" th:action="@{/main}" method="post" name="model">
+		<ul>
+			<li><label for="serchChat">宛先 ：</label> 
+			<select class="page-pulldown pageStyle2" name="selectUser" id="selectUser">
+					<option th:each="obj : ${Userlist}" align="center">
+						<p th:text="${obj.UserlistMap}"></p>
+					</option>
+			</select>
+			</li>
+		</ul>
+		<div>
+			<textarea maxlength=2000 name="chat" id="chat"></textarea>
+		</div>
+		<div class="metdata">
+			作成日：
+			<p th:text="${today}"></p>
+			作成者：
+			<p th:text="${creator}"></p>
+		</div>
+		<input type="button" value="送信" onclick="sousin()">
+		<h3 th:text="${title}">タイトル</h3>
+		<p th:if="${complete}" th:text="${complete}" 　style="color: blue"></p>
+		<details id="openStatus">
+			<summary>
+				<strong>伝言を検索する。</strong>
+			</summary>
+			<div id="content">
+				<ul>
+					<div class="metdata1">
+						<li><label for="serchChat">宛先 ：</label> <select
+							class="page-pulldown pageStyle2" name="selectUserSerch"
+							id="selectUserSerch">
+								<option th:each="obj : ${Userlist}" align="center"
+									th:selected="${dispUserSerch} == ${obj.UserlistMap}">
+									<p th:text="${obj.UserlistMap}"></p>
+								</option>
+						</select>
+						</li>
+						<li><label for="serchChat">伝言 ：</label> <input type="text"
+							id="serchChat" name="serchChat" th:value="${serchChat}">
+						</li>
+						<li><label for="serchCreator">作成者：</label> <input type="text"
+							id="serchCreator" name="serchCreator" th:value="${serchCreator}">
+						</li>
+					</div>
+					<div class="metdata2">
+						<li><label for="serchCreateTime">作成日：</label> <input
+							type="date" class="datepicker" id="serchCreateTime"
+							name="serchCreateTime" th:value="${serchCreateTime}"><br>
+						</li>
+						<li><label for="serchUpdateTime">更新日：</label> <input
+							type="date" class="datepicker" id="serchUpdateTime"
+							name="serchUpdateTime" th:value="${serchUpdateTime}"><br>
+						</li>
+					</div>
+					<div class="metdata3">
+						<li>
+							<button type="button" onclick="search()">検索</button>
+							<button type="button" onclick="searchClear()">クリア</button>
+						</li>
+					</div>
+				</ul>
+			</div>
+		</details>
+		<div class="board-box-pager" style="width: auto;">
+			<div class="table-head-pager-cases">
+				<p th:text="${pageLinkCategry}"></p>
+				/
+				<p th:text="${totalCount}"></p>
+				件
+				<div class="pageStyle">
+					<input type="hidden" name="dispIndex" id="dispIndex"
+						th:value="${dispIndex}">
+					<div class="pageStyle2" th:if="${dispIndex} > 1">
+						<a href="javascript:void(0);" onclick="onBetore();">前へ</a>
+					</div>
+					<div class="pageStyle2" th:if="${dispIndex} <= 1">前へ</div>
+					<select class="page-pulldown pageStyle2" name="pageNo" id="pageNo"
+						onchange="changePage()">
+						<option th:each="obj : ${pageList}" align="center"
+							th:selected="${dispIndex} == ${obj.address_page}">
+							<p th:text="${obj.address_page} + ページ"></p>
+						</option>
+					</select>
+					<div class="pageStyle2" th:if="${dispIndex} < ${maxPage}">
+						<a href="javascript:void(0);" onclick="onAfter();">次へ</a>
+					</div>
+					<div class="pageStyle2" th:if="${dispIndex} >= ${maxPage}">次へ</div>
+				</div>
+			</div>
+		</div>
+		<!-- hidden項目 -->
+		<input type="hidden" name="userId" id="chatUserId"
+			th:value="${userId}">
+		<!-- //操作区分操作区分(1:新規登録)(2:ページング)(3:削除)(4:参照)(5:編集)(6:検索) -->
+		<input type="hidden" name="operCategory" id="operCategory"
+			th:value="${operCategory}"> <input type="hidden"
+			name="userName" id="userName" th:value="${creator}"> <input
+			type="hidden" name="allSelect" id="allSelect" th:value="${allSelect}">
+		<input type="hidden" name="selectdeleData" id="selectdeleData"
+			　value=""> <input type="hidden" name="referenceSelect"
+			id="referenceSelect" value=""> <input type="hidden"
+			name="searchEntry" id="searchEntry" th:value="${searchEntry}">
+		<input type="hidden" name="searchStatus" id="searchStatus"
+			th:value="${searchStatus}">
+		<!-- hidden項目 -->
+		<div class="tableStyle">
+			<table border="1" th:nuless="${#lists.isEmpty(list)}"
+				style="table-layout: fixed;">
+				<tr class="header_button">
+					<th></th>
+					<th colspan="2">
+						<button type="button" onclick="selectList(1)">すべての伝言</button>
+						<button type="button" onclick="selectList(0)">私の伝言</button>
+						<button type="button" onclick="selectList(2)">私宛の伝言</button>
+					</th>
+					<th colspan="5"></th>
+					<th class="allDeleta">
+						<input type="button" value="すべて削除" onclick="deleta(null, 2)"
+						name="allDeleta" id="allDeleta" title="チェックボックスに二つ以上チェックしてください。" disabled>
+					</th>
+				</tr>
+				<tr>
+					<th class="check">
+						<div>
+							<input type="checkbox" name="allChackbox" id="allChackbox">
+							<label form="allChackbox"></label>
+						</div>
+					</th>
+					<th>宛先</th>
+					<th>伝言内容</th>
+					<th>作成者</th>
+					<th>作成日</th>
+					<th>更新日</th>
+					<th class="button">編集</th>
+					<th class="button">参照</th>
+					<th class="button">削除</th>
+				</tr>
+				<tr th:each="obj : ${list}" align="center">
+					<td><input type="hidden" name="deletabotn" id="deletabotn"
+						th:value="${obj.active}"> <input type="hidden"
+						name="dengonId" id="dengonId" th:value="${obj.id}"> <input
+						type="hidden" name="chatText" id="chatText" th:value="${obj.chat}">
+						<input type="checkbox" name="dengonchack" id="${center.index}">
+						<label for="${center.index}"></label></td>
+					<td class="userTd" th:text="${obj.address}"
+						th:value="${obj.address}" name="address" id="address">
+					</td>
+					<td class="chatTd" align="left">
+						<div th:if="${obj.chat.length} < 50">
+							<input type="hidden" th:text="${obj.chat}" name="chatTextInner"
+								id="chatTextInner">
+						</div>
+						<div th:if="${obj.chat.length} >= 50" data-toggle="tooltip"
+							th:title="${obj.chat}">
+							<input type="hidden" th:text="${obj.chatMold} + '...'"
+								name="chatTextInner" id="chatTextInner">
+						</div>
+					</td>
+					<td class="userTd" th:text="${obj.userName}"
+						th:value="${obj.userName}" name="userName" id="userName"><input
+						type="hidden" name="userId" id="userId" th:value="${obj.userId}"></input>
+					</td>
+					<td class="timeTd" th:text="${obj.createTime}"
+						th:value="${obj.createTime}" name="createTime" id="createTime"></td>
+					<td class="timeTd" th:text="${obj.updateTime}"
+						th:value="${obj.updateTime}" name="updateTime" id="updateTime"></td>
+					<td class="buttontext">
+						<div th:if="${obj.active} == 1">
+							<button th:id="${obj.id}" onclick="reference_editing(this.id, 5)">編集</button>
+						</div>
+						<div th:if="${obj.active} == 0">
+							<button th:id="${obj.id}" onclick="reference_editing(this.id, 5)"
+								disabled>編集</button>
+						</div>
+					</td>
+					<td class="buttontext">
+						<button th:id="${obj.id}" onclick="reference_editing(this.id, 4)">参照</button>
+					</td>
+					<td class="buttontextdele">
+						<div th:if="${obj.active} == 1">
+							<button type="button" th:id="${obj.id}"
+								onclick="deleta(this.id, 1)">削除</button>
+						</div>
+						<div th:if="${obj.active} == 0">
+							<button type="button" th:id="${obj.id}"
+								onclick="deleta(this.id, 1)" disabled>削除</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<p th:if="${#lists.isEmpty(list)}">登録されているクイズはありません。</p>
+	</form>
+</body>
+</html>

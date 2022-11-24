@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="css/sample1.css">
+<script src="js/sample1.js"></script>
+<script src="js/modal.js"></script>
+</head>
+<body>
+	<header>
+		<h1 class="title">管理人室</h1>
+		<nav class="nav">
+			<ul class="menu-group">
+				<form th:action="@{/main}" method="Get" id="form02" name="model">
+					<input type="button" value="前ページへ移動"
+						onclick="history.back(); return false;" /> <input type="hidden"
+						name="userName" id="userName" th:value="${janitorUserName}">
+					<input type="hidden" name="userId" id="userId"
+						th:value="${janitorUserId}">
+				</form>
+			</ul>
+		</nav>
+	</header>
+	<h3>問い合わせ一覧</h3>
+	<form>
+		<table border="1" th:nuless="${#lists.isEmpty(list)}"
+			style="table-layout: fixed;">
+			<tr>
+				<th class="check">
+					<div>
+						<input type="checkbox" name="allChackbox" id="allChackbox">
+						<label form="allChackbox"></label>
+					</div>
+				</th>
+				<th>宛先</th>
+				<th>伝言内容</th>
+				<th>作成者</th>
+				<th>作成日</th>
+				<th>更新日</th>
+				<th class="button">編集</th>
+				<th class="button">参照</th>
+				<th class="button">削除</th>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
