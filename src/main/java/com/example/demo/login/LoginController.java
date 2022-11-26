@@ -105,14 +105,13 @@ public class LoginController {
 			chat.setUpdateTime("");
 			chat.setCreateTime(today);
 			service.insertChat(chat);
-			//redirect.addFlashAttribute("complete", "登録が完了しました");
-			model.addAttribute("complete","登録が完了しました");
+			redirect.addFlashAttribute("complete", "登録が完了しました");
+			//model.addAttribute("complete","登録が完了しました");
 			//information(model, form, redirect);
-			//return "redirect:/";
-			break;
+			return "redirect:/";
 		case "3":
 			String select = form.getSelectdeleData();
-			//System.out.println(select);
+			System.out.println(select);
 			String[] selects = select.split(",");
 			for(int i = 0;i < selects.length;i++) {
 				service.deleteChatById(Integer.parseInt(selects[i]));
