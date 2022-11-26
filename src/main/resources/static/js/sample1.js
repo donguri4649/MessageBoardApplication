@@ -198,9 +198,13 @@ function reference_editing(selectData, operCategory){
 		}
     },1);
     },10);
+    
+    document.model.action = `modal`;
+    form.method = "post";
+    document.submit();
 	
-	document.model.action = `modal`;
-    document.form1.submit();
+	/*document.model.action = `modal`;
+    document.form1.submit();*/
     window.focus();
 }
 
@@ -255,7 +259,7 @@ function searchClear(){
 	document.getElementById('serchUpdateTime').value = "";
 }
 
-function janitorOffice(flag){
+function janitorOffice(){
 	var target = document.getElementById("form02");
 	document.model.action = `janitorOffice`;
     target.method = "post";

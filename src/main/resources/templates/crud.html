@@ -24,7 +24,7 @@
       <form th:action="@{/logout}" method="post">
         <input type="submit" value="ログアウト" onclick="logout()"/>
 	  </form>
-	  <form th:action="@{/janitorOffice}" method="post" id="form02" name="model">
+	  <form th:action="@{/janitorOffice}" method="post" id="form02" name="">
         <input type="button" value="管理人室" onclick="janitorOffice()"/>
         <input type="hidden" name="userName" id="userName" th:value="${janitorUserName}">
         <input type="hidden" name="userId" id="userId" th:value="${janitorUserId}">
