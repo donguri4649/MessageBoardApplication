@@ -260,8 +260,58 @@ function searchClear(){
 }
 
 function janitorOffice(){
+	var UserInput = prompt("パスワードを入力して下さい。");
+	var pass = "%u958B%u3051%u30B4%u30DE";
+	
+	if(!UserInput){
+		return;
+	}
+	
+	if(UserInput == ""){
+		alert("パスワードを入力してください。");
+		return;
+	}
+	
+	if(!(UserInput == unescape(pass))){
+		alert("パスワードが間違っています。");
+		return;
+	}
+	
 	var target = document.getElementById("form02");
 	document.model.action = `janitorOffice`;
     target.method = "post";
     target.submit();
+}
+
+function inquiry(){
+	var lockId = "lockId";
+	
+	var form = document.getElementById("form03");
+	var h = 500;
+	var w = 550;
+	form.target = "window2";
+	wTop = window.screenTop + (window.innerHeight / 2) - (h / 2);
+    wLeft = window.screenLeft + (window.innerWidth / 2) - (w / 2);
+
+	var w = window.open("about:blank", form.target,'width=' + w + ', height=' + h + ', top=' + wTop + ', left=' + wLeft + ', personalbar=0, toolbar=0, scrollbars=1, resizable=!');
+
+	lockScreen(lockId);
+	setTimeout(function(){
+		var interval = setInterval(function(){
+        // 子画面にフォーカスを当てる
+        if(!w.document.hasFocus()){
+            w.focus();
+        }
+        if(!w || w.closed){
+			unlockScreen(lockId);
+			// Intervalを破棄
+        	clearInterval(interval);
+        	location.reload();
+		}
+    },1);
+    },10);
+    
+    document.model.action = `inquiry`;
+    form.method = "post";
+    document.submit();
 }

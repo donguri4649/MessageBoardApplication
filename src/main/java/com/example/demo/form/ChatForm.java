@@ -54,4 +54,23 @@ public class ChatForm {
 	
 	//検索状態
 	private String searchStatus;
+	
+	/***********管理室****************/
+
+	//管理室フラグ
+	private String officeFlag;
+	
+	//送信フラグ
+	private String submitFlg;
+	
+	/**********問い合わせ************/
+	
+	//メールアドレス
+	private String inquiryemail;
+	
+	//電話番号
+	private String inquiryphone;
+	
+	//当い合わせないよう
+	private String inquircontent;
 }

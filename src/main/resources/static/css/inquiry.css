@@ -1,0 +1,54 @@
+p {
+	font-weight: bolder;
+}
+
+input {
+	width: 300px;
+}
+
+#name {
+	margin-left: 115px;
+	margin-bottom: 10px;
+}
+
+#email {
+	margin-left: 35px;
+	margin-bottom: 10px;
+}
+
+#phone {
+	margin-left: 83px;
+	margin-bottom: 10px;
+}
+
+.content {
+	position: relative;
+}
+
+.content-label {
+	top: 0;
+	left: 0;
+}
+
+#inquircontent {
+	margin-top: 7px;
+	margin-left: 153px;
+	height: 200px;
+	width: 350px;
+}
+
+.button {
+	margin-top: 30px;
+	width: 550px;
+	text-align: center;
+}
+
+button {
+	width: 130px;
+	height: 30px;
+	border: none;
+	background-color: #0080ff;
+	color: white;
+	font-size: 113%;
+	font-family: MS ゴシック;
+}

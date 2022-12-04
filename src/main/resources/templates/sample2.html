@@ -8,41 +8,103 @@
 <script src="js/modal.js"></script>
 </head>
 <body>
-	<header>
-		<h1 class="title">管理人室(現在作成途中です)</h1>
-		<nav class="nav">
-			<ul class="menu-group">
-				<form th:action="@{/main}" method="Get" id="form02" name="model">
-					<input type="button" value="前ページへ移動"
-						onclick="history.back(); return false;" /> <input type="hidden"
-						name="userName" id="userName" th:value="${janitorUserName}">
-					<input type="hidden" name="userId" id="userId"
-						th:value="${janitorUserId}">
-				</form>
-			</ul>
-		</nav>
-	</header>
-	<h3>問い合わせ一覧</h3>
-	<form>
-		<table border="1" th:nuless="${#lists.isEmpty(list)}"
-			style="table-layout: fixed;">
-			<tr>
-				<th class="check">
-					<div>
-						<input type="checkbox" name="allChackbox" id="allChackbox">
-						<label form="allChackbox"></label>
-					</div>
-				</th>
-				<th>宛先</th>
-				<th>伝言内容</th>
-				<th>作成者</th>
-				<th>作成日</th>
-				<th>更新日</th>
-				<th class="button">編集</th>
-				<th class="button">参照</th>
-				<th class="button">削除</th>
-			</tr>
-		</table>
+	<form id="form02" th:action="@{/main}" method="post" name="model">
+	<!-- hidden項目 -->
+	<input type="hidden" name="userName" id="userName" th:value="${janitorUserName}">
+	<input type="hidden" name="userId" id="userId" th:value="${janitorUserId}">
+	<!-- //操作区分操作区分(1:新規登録)(2:ページング)(3:削除)(4:参照)(5:編集)(6:検索) -->
+	<input type="hidden" name="operCategory" id="operCategory" th:value="${operCategory}">
+	<input type="hidden" name="officeFlag" id="officeFlag" th:value="${officeFlag}">
+	<input type="hidden" name="updateFlg" id="updateFlg" value="">
+	<!-- hidden項目 -->
+		<header>
+			<h1 class="title">管理人室(現在作成途中です)</h1>
+			<nav class="nav">
+				<ul class="menu-group">
+					<input type="button" value="前ページへ移動" onclick="returnFunc()" />
+				</ul>
+			</nav>
+		</header>
+		<div class="userList">
+			<h3>ユーザー一覧</h3>
+			<table border="1" th:nuless="${#lists.isEmpty(list)}"
+				style="table-layout: fixed;">
+				<tr>
+					<th class="check">
+					</th>
+					<th>ユーザー名</th>
+					<th>作成日</th>
+					<th>権限</th>
+				</tr>
+				<tr th:each="obj : ${accountList}" align="center">
+					<td class="userid" th:value="${obj.userid}" name="userid" id="userid">
+						<input type="hidden" th:value="${obj.userid}" name="userid" id="userid">
+						<label for="userCheckbox">
+							<input type="checkbox" name="dengonchackUser" id="userCheckbox">
+						</label>
+					</td>
+					<td class="username" th:text="${obj.username}"
+						th:value="${obj.username}" name="username" id="username">
+					</td>
+					<td class="creationdate" th:text="${obj.creationdate}"
+						th:value="${obj.creationdate}" name="creationdate" id="creationdate">
+					</td>
+					<td class="creationdate" th:text="${obj.authority}"
+						th:value="${obj.authority}" name="authority" id="authority">
+					</td>
+					<!-- <td class="userid" name="userid" id="userid">
+						<label th:for="${obj.userid}" class="switch_label">
+							<div class="switch">
+								<input type="checkbox" name="switchcheckbox" th:id="${obj.userid}" onclick="checkfunction()">
+								<div class="circle"></div>
+								<div class="base"></div>
+							</div>
+							<p　class="title" id="manager">管理人</p>
+							<p class="title" id="guests">ゲスト</p>
+						</label>
+					</td> -->
+				</tr>
+			</table>
+		</div>
+		<div class="inquiryList">
+			<h3>問い合わせ一覧</h3>
+			<table border="1" th:nuless="${#lists.isEmpty(list)}"
+				style="table-layout: fixed;">
+				<tr>
+					<th></th>
+					<th>氏名</th>
+					<th>メールアドレス</th>
+					<th>電話番号</th>
+					<th>問い合わせ内容</th>
+					<th>問い合わせ日時</th>
+				</tr>
+				<tr th:each="obj : ${janitorList}" align="center">
+					<td>
+						<input type="hidden" name="inquiryid" id="inquiryid" th:value="${obj.inquiryid}">
+						<input type="checkbox" name="dengonchack" id="${center.index}">
+						<label for="${center.index}"></label></td>
+					<td class="inquiryname" th:text="${obj.inquiryname}"
+						th:value="${obj.inquiryname}" name="inquiryname" id="inquiryname">
+					</td>
+					<td class="inquiryemail" th:text="${obj.inquiryemail}"　th:value="${obj.inquiryemail}" name="inquiryemail" id="inquiryemail">
+						<input　type="hidden" name="inquiryemail" id="inquiryemail" th:value="${obj.inquiryemail}"></input>
+					</td>
+					<td class="inquiryphone" th:text="${obj.inquiryphone}"
+						th:value="${obj.inquiryphone}" name="inquiryphone" id="inquiryphone"></td>
+					<td class="inquircontent" th:text="${obj.inquircontent}"
+						th:value="${obj.inquircontent}" name="inquircontent" id="inquircontent"></td>
+					<td class="createTime" th:text="${obj.createTime}"
+						th:value="${obj.createTime}" name="createTime" id="createTime"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="settingList">
+			<h3>設定一覧</h3>
+			<table border="1" th:nuless="${#lists.isEmpty(list)}"
+				style="table-layout: fixed;">
+				
+			</table>
+		</div>
 	</form>
 </body>
 </html>

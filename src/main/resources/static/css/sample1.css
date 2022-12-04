@@ -126,6 +126,14 @@ th{
 	background: d0ebfd;
 }
 
+input[name='dengonchack']{
+  transform: scale(1.4);
+}
+
+input[name='allChackbox']{
+  transform: scale(1.4);
+}
+
 /*ツールチップ*/
 .tooltip{
 	position:relative;
@@ -268,4 +276,71 @@ header {
  	display:inline;
  	margin-right: 10px; 
 	margin: 10px; 
+}
+
+
+/*============================================================*/
+
+.userList {
+	margin: 10px;
+	padding: 10px;
+}
+
+.inquiryList {
+	margin: 10px;
+	padding: 10px;
+}
+
+.settingList {
+	margin: 10px;
+	padding: 10px;
+}
+
+.switch_label {
+  display: flex;
+  align-items: center;
+}
+
+input[name='switchcheckbox'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.base {
+  width: 56px;
+  border-radius: 16px;
+  height: 32px;
+  background-color: #ddd;
+}
+
+.title {
+  margin-left: 4px;
+}
+
+input[name='switchcheckbox']:checked ~ .base {
+  background-color: rgb(219, 234, 254);
+}
+
+input[name='switchcheckbox']:checked ~ .circle {
+  transform: translateX(100%);
+  background-color: blue;
+}
+
+input[name='dengonchackUser']{
+  transform: scale(1.7);
+}
+
+.circle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: gray;
+}
+
+.switch {
+  position: relative;
 }

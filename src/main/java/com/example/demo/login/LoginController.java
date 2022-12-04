@@ -1,6 +1,7 @@
 package com.example.demo.login;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-//@RequestMapping("/")
 public class LoginController {
 	
 	@Autowired
@@ -58,15 +58,14 @@ public class LoginController {
 	//初期表示
 	@RequestMapping("/")
     public String ChatShow (@ModelAttribute ChatForm form, Model model ,Logintb logintb) {
+
 		// SecurityContextHolderからAuthenticationオブジェクトを取得
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        //System.out.println("test1:" + userService.getUserInfo(authentication.getName()).getUserid());
-		
-		//ユーザー、ユーザーID
+		SecurityContext context = SecurityContextHolder.getContext();
+		Authentication authentication = context.getAuthentication();
+		//System.out.println("test1:" + userService.getUserInfo(authentication.getName()).getUserid());
 		String userName = authentication.getName();
 		String userId = userService.getUserInfo(userName).getUserid();
-		
+
 		String today = today();
 		form.setUserName(userName);
 		form.setUserId(userId);
@@ -274,13 +273,16 @@ public class LoginController {
 		
 		model.addAttribute("janitorUserName",janitorUserName);
 		model.addAttribute("janitorUserId",janitorUserId);
+		//System.out.println(userRepository.janitorOfficeAccountSetting(form,"1").get(0).get("authority"));
+		model.addAttribute("janitorOfficeFlag",userRepository.janitorOfficeAccountSetting(form,"1").get(0).get("authority"));
 	}
 
   //今日の日付
   	private String today() {
   		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+  		LocalDateTime dt2 = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
           //System.out.println("yyyy/MM/dd HH:mm:ss-> "+dtf.format(LocalDateTime.now()));
-  		return dtf.format(LocalDateTime.now());
+  		return dt2.format(dtf);
   	}
   	
   	//List<Chat>のキャスト

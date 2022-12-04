@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>お問い合わせフォーム</title>
+<link rel="stylesheet" href="css/inquiry.css">
+<link rel="stylesheet" href="css/jquery-ui.min.css">
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery-3.6.1.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/inquiry.js"></script>
+</head>
+<body>
+	<form id="form04" name="model" th:action="@{/inquiry}" method="post" >
+		<p>お問い合わせ</p>
+		<div class="name">
+			<label for="name">氏名：</label>
+			<input type="text" id="name" name="name" th:value="${Inquirer}" disabled/>
+		</div>
+		<div class="email">
+			<label for="email">メールアドレス： </label>
+			<input type="text" id="email"　name="email"/>
+		</div>
+		<div class="phone">
+			<label for="phone">電話番号：</label>
+			<input type="text" id="phone"　name="phone" />
+		</div>
+		<div class="content">
+			<div class="contet-label">
+				<label for="content">お問い合わせ内容：</label>
+			</div>
+			<textarea id="inquircontent" name="inquircontent"></textarea>
+		</div>
+		<div class="button">
+			<button type="button" onclick="sousin()">送信</button>
+		</div>
+        <input type="hidden" name="userId" id="userId" th:value="${InquirerId}">
+        <input type="hidden" name="submitFlg" id="submitFlg" th:value="${submitFlg}">
+        <input type="hidden" name="userName" id="userName" th:value="${Inquirer}">
+        <input type="hidden" name="inquiryemail" id="inquiryemail">
+        <input type="hidden" name="inquiryphone" id="inquiryphone">
+	</form>
+</body>
+</html>

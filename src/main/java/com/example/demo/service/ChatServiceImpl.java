@@ -94,7 +94,7 @@ public class ChatServiceImpl implements ChatService {
 						if(!("").equals(SearchItems[0])) {
 							sql.append(" and chat like :chat");
 						}else {
-							sql.append("chat like :chat");
+							sql.append("　chat like :chat");
 						}
 						param.addValue("chat", "%" + SearchItems[1] + "%");
 						model.addAttribute("serchChat",SearchItems[1]);
@@ -103,10 +103,10 @@ public class ChatServiceImpl implements ChatService {
 				if(count > 2) {
 					if(!("").equals(SearchItems[2])) {
 						System.out.println("userName:" + SearchItems[2]);
-						if(!("").equals(SearchItems[1])) {
+						if(!("").equals(SearchItems[0]) || !("").equals(SearchItems[1])) {
 							sql.append(" and userName=:userName");
 						}else {
-							sql.append("userName=:userName");
+							sql.append("　userName=:userName");
 						}
 						param.addValue("userName", SearchItems[2]);
 						model.addAttribute("serchCreator",SearchItems[2]);
@@ -119,7 +119,7 @@ public class ChatServiceImpl implements ChatService {
 						if(!("").equals(SearchItems[0]) || !("").equals(SearchItems[1]) || !("").equals(SearchItems[2])) {
 							sql.append(" and createTime like :createTime");
 						}else {
-							sql.append("createTime like :createTime");
+							sql.append("　createTime like :createTime");
 						}
 						param.addValue("createTime", SearchItems[3] + "%");
 						model.addAttribute("serchCreateTime",SearchItems[3]);
@@ -132,7 +132,7 @@ public class ChatServiceImpl implements ChatService {
 						if(!("").equals(SearchItems[0]) || !("").equals(SearchItems[1]) || !("").equals(SearchItems[2]) || !("").equals(SearchItems[3])) {
 							sql.append(" and updateTime like :updateTime");
 						}else {
-							sql.append("updateTime like :updateTime");
+							sql.append("　updateTime like :updateTime");
 						}
 						param.addValue("updateTime", SearchItems[4] + "%");
 						model.addAttribute("serchUpdateTime",SearchItems[4]);

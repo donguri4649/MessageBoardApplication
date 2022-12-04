@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Chat;
 import com.example.demo.entity.Logintb;
+import com.example.demo.form.ChatForm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -55,6 +56,24 @@ public class UserRepository{
 		SqlParameterSource param = new MapSqlParameterSource();
 		List<Logintb> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
 
+		return itiranList(userList);
+	}
+	
+	public List<Map<String,Object>> janitorOfficeAccountSetting(ChatForm form, String userFlag){
+
+		StringBuilder sql = new StringBuilder();
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		List<Logintb> userList = null;
+		if(("1").equals(userFlag)) {
+			sql.append("SELECT userid,username,creationdate,authority from logintb WHERE username=:username;");
+			param.addValue("username", form.getUserName());
+			userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+		}else {
+			sql.append("SELECT userid,username,creationdate,authority from logintb");
+			userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+
+		}
+		
 		return itiranList(userList);
 	}
 	
