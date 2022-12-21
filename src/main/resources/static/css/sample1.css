@@ -43,6 +43,10 @@ table .timeTd{
 	font-size: 1px;
 	width:11%;
 }
+.timeTdSort{
+  text-align: center;
+}
+
 table .buttontext{
 	width:5%;
 }
@@ -284,6 +288,7 @@ header {
 .userList {
 	margin: 10px;
 	padding: 10px;
+    position: relative;
 }
 
 .inquiryList {
@@ -343,4 +348,8 @@ input[name='dengonchackUser']{
 
 .switch {
   position: relative;
+}
+
+.switchstyle{
+	border:none;
 }

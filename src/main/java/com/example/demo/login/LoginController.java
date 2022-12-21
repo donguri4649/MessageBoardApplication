@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.Chat;
@@ -82,6 +84,13 @@ public class LoginController {
 	@PostMapping("/main")
     public String ChatShowSousin (@ModelAttribute ChatForm form, Model model,RedirectAttributes redirect) {
 		
+		if(("1").equals(form.getKirikaeFlag())) {
+			model.addAttribute("kirikaeFlag", form.getKirikaeFlag());
+			System.out.println("test1:" + userRepository.accountUserId(form.getUserName()).get(0).get("userid"));
+			form.setUserId((String) userRepository.accountUserId(form.getUserName()).get(0).get("userid"));
+			System.out.println("test2:" + form.getUserName());
+		}
+		
 		String userId = form.getUserId();
 		String userName = form.getUserName();
 		String today = today();
@@ -123,6 +132,27 @@ public class LoginController {
 		
 		information(model, form, redirect, userName, userId);
 		return "crud";
+    }
+	
+	@RequestMapping("/getAutoComplete")
+	@ResponseBody
+    public String getAutoComplete () {
+		//宛先
+		List<String> Userlist = new ArrayList<String>();
+		for(int i = 0;i < userRepository.accountUsername().size();i++) {
+			Userlist.add((String) userRepository.accountUsername().get(i).get("username"));
+		}
+		//System.out.println("test2:" + Userlist);
+		ObjectMapper mapper = new ObjectMapper();
+		String json = null;
+		try {
+			json = mapper.writeValueAsString(Userlist);
+		} catch (JsonProcessingException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		//System.out.println("test3:" + json);
+		return json;
     }
 	
 	@GetMapping("/login")
@@ -176,9 +206,7 @@ public class LoginController {
 	
 	//持ち回り情報
 	private void information(Model model, ChatForm form, RedirectAttributes redirect, String janitorUserName ,String janitorUserId) {
-		List<Map<String,Object>> list = itiranList();
-		
-		model.addAttribute("title", "すべての伝言");
+		List<Map<String,Object>> list = null;
 		
 		if(("1").equals(form.getSearchStatus())) {
 			list = ChatService.searchChat(form,model,"1");
@@ -191,8 +219,23 @@ public class LoginController {
 		}else if(("0").equals(form.getAllSelect())) {
 			list = ChatService.searchChat(form,model,"3");
 			model.addAttribute("title", "私の伝言");
+		}else {
+			list = ChatService.searchChat(form,model,"0");
+			model.addAttribute("title", "すべての伝言");
 		}
-		//System.out.println("test1");
+		model.addAttribute("createSort","0");
+		model.addAttribute("updateSort","0");
+		//System.out.println("test1" + form.getCreateSortTime());
+		if(!("").equals(form.getCreateSortTime()) && form.getCreateSortTime() != null) {
+			//作成日 "0":デフォルト　"1":降順  "2":昇順
+			model.addAttribute("createSortTime",form.getCreateSortTime());
+			model.addAttribute("createSort",form.getCreateSortTime());
+		}
+		if(!("").equals(form.getUpdateSortTime()) && form.getUpdateSortTime() != null) {
+			//更新日　"0":デフォルト　"1":降順  "2":昇順
+			model.addAttribute("updateSortTime",form.getUpdateSortTime());
+			model.addAttribute("updateSort",form.getUpdateSortTime());
+		}
 		//全件数
 		int totalCount = 0;
 		if(!("").equals(list) && list != null) {
@@ -227,7 +270,7 @@ public class LoginController {
 		}
 		
 		ArrayList<Map<String,Object>> tumekaelist = new ArrayList<Map<String,Object>>();
-		if(!("").equals(list) && list != null) {
+		if(list != null) {
 			if(list.size() > 20) {
 				for(int i = (((intdispIndex) - 1)*20);i < keisan;i++) {
 					if((list.get(i).get("userId")).equals(form.getUserId()) &&
@@ -274,7 +317,11 @@ public class LoginController {
 		model.addAttribute("janitorUserName",janitorUserName);
 		model.addAttribute("janitorUserId",janitorUserId);
 		//System.out.println(userRepository.janitorOfficeAccountSetting(form,"1").get(0).get("authority"));
-		model.addAttribute("janitorOfficeFlag",userRepository.janitorOfficeAccountSetting(form,"1").get(0).get("authority"));
+		if(!("1").equals(form.getKirikaeFlag())) {
+			model.addAttribute("janitorOfficeFlag",userRepository.janitorOfficeAccountSetting(form,"1").get(0).get("authority"));
+		}else {
+			model.addAttribute("janitorOfficeFlag","MANAGER");
+		}
 	}
 
   //今日の日付

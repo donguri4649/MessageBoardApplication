@@ -4,8 +4,12 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="css/sample1.css">
-<script src="js/sample1.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/datepicker-ja.js"></script>
+<script src="js/sample2.js"></script>
 <script src="js/modal.js"></script>
+<script src="js/Ajax.js"></script>
 </head>
 <body>
 	<form id="form02" th:action="@{/main}" method="post" name="model">
@@ -16,6 +20,8 @@
 	<input type="hidden" name="operCategory" id="operCategory" th:value="${operCategory}">
 	<input type="hidden" name="officeFlag" id="officeFlag" th:value="${officeFlag}">
 	<input type="hidden" name="updateFlg" id="updateFlg" value="">
+	<input type="hidden" name="kirikaeFlag" id="kirikaeFlag" value="">
+	<input type="hidden" name="kirikaeFastFlag" id="kirikaeFastFlag" value="">
 	<!-- hidden項目 -->
 		<header>
 			<h1 class="title">管理人室(現在作成途中です)</h1>
@@ -35,16 +41,17 @@
 					<th>ユーザー名</th>
 					<th>作成日</th>
 					<th>権限</th>
+					<th title="ログイン中のユーザー">ログイン中</th>
 				</tr>
 				<tr th:each="obj : ${accountList}" align="center">
 					<td class="userid" th:value="${obj.userid}" name="userid" id="userid">
 						<input type="hidden" th:value="${obj.userid}" name="userid" id="userid">
+						<input type="hidden" name="username" id="username" th:value="${obj.username}">
 						<label for="userCheckbox">
 							<input type="checkbox" name="dengonchackUser" id="userCheckbox">
 						</label>
 					</td>
-					<td class="username" th:text="${obj.username}"
-						th:value="${obj.username}" name="username" id="username">
+					<td class="username" th:text="${obj.username}">
 					</td>
 					<td class="creationdate" th:text="${obj.creationdate}"
 						th:value="${obj.creationdate}" name="creationdate" id="creationdate">
@@ -52,17 +59,21 @@
 					<td class="creationdate" th:text="${obj.authority}"
 						th:value="${obj.authority}" name="authority" id="authority">
 					</td>
-					<!-- <td class="userid" name="userid" id="userid">
-						<label th:for="${obj.userid}" class="switch_label">
-							<div class="switch">
-								<input type="checkbox" name="switchcheckbox" th:id="${obj.userid}" onclick="checkfunction()">
-								<div class="circle"></div>
-								<div class="base"></div>
-							</div>
-							<p　class="title" id="manager">管理人</p>
-							<p class="title" id="guests">ゲスト</p>
-						</label>
-					</td> -->
+					<td>
+						<div th:if="${obj.username} == ${janitorUserName}">
+							<input type="checkbox" name="switchId" id="${center.index}" checked>
+						</div>
+						<div th:if="${obj.username} != ${janitorUserName}">
+							<input type="checkbox" name="switchId" id="${center.index}">
+						</div>
+						<label for="${center.index}"></label>
+					</td>
+				</tr>
+				<tr class="switchstyle">
+				<td colspan="4"></td>
+				<td>
+					<input type="button" value="ユーザー切替" onclick="switchButton()" title="ログイン中のユーザーを切り替える">
+				</td>
 				</tr>
 			</table>
 		</div>

@@ -65,16 +65,20 @@ public class ChatServiceImpl implements ChatService {
 
 	public List<Map<String,Object>> searchChat(ChatForm form, Model model,String serchDivision) {
 		
-		String[] SearchItems = form.getSearchEntry().split(",");
-		int count = SearchItems.length;
-		System.out.println("count:" + count);
-		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * from chat");
+		sql.append("SELECT * from chat ");
 		MapSqlParameterSource param = new MapSqlParameterSource();
+		List<Chat> userList = null;
+		int count = 0;
+		String[] SearchItems = null;
+		if(!("0").equals(serchDivision)) {
+			SearchItems = form.getSearchEntry().split(",");
+			count = SearchItems.length;
+			System.out.println("count:" + count);
+		}
 		
 		if(0 != count) {
-			sql.append(" WHERE ");
+			sql.append("WHERE ");
 			if(("3").equals(serchDivision)) {
 				sql.append("userName=:userName");
 				param.addValue("userName", form.getUserName());
@@ -140,8 +144,29 @@ public class ChatServiceImpl implements ChatService {
 				}
 			}
 		}
-		List<Chat> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
-		System.out.println("userList:" + userList);
+		//"1":降順  "2":昇順
+		if(("2").equals(form.getCreateSortTime())) {
+			sql.append(" ORDER BY createtime");
+		}else if(("1").equals(form.getCreateSortTime())){
+			sql.append(" ORDER BY createtime DESC");
+		}
+		//System.out.println("test1:" + form.getCreateSortTime());
+		if(("2").equals(form.getUpdateSortTime())) {
+			if(("2").equals(form.getCreateSortTime()) || ("1").equals(form.getCreateSortTime())) {
+				sql.append(", updatetime");
+			}else {
+				sql.append(" ORDER BY updatetime");
+			}
+		}else if(("1").equals(form.getUpdateSortTime())){
+			if(("2").equals(form.getCreateSortTime()) || ("1").equals(form.getCreateSortTime())) {
+				sql.append(", updateTime DESC");
+			}else {
+				sql.append(" ORDER BY updateTime DESC");
+			}
+		}
+		//System.out.println("test1:" + form.getUpdateSortTime());
+		userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+		//System.out.println("userList:" + userList);
 		return itiranList(userList);
 	}
 	

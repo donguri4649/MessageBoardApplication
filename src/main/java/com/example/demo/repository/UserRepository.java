@@ -77,9 +77,18 @@ public class UserRepository{
 		return itiranList(userList);
 	}
 	
+	public List<Map<String,Object>> accountUserId(String userName){
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT userid from logintb WHERE username=:username;");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("username", userName);
+		List<Logintb> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+		//System.out.println("test1:" + itiranList(userList));
+		return itiranList(userList);
+	}
+	
 	//List<Chat>のキャスト
   	private List<Map<String,Object>> itiranList(List<Logintb> userList){
-  		//System.out.println("test1:" + list);
+  		//System.out.println("test1:" + userList);
   		ObjectMapper mapper = new ObjectMapper();
   		String json = null;
   		//Javaオブジェクト→json
@@ -101,8 +110,10 @@ public class UserRepository{
 		}
   		
   		for(int i = 0;i < userList.size();i++) {
-  			if(userList.get(i).getUsername().length() > 50) {
-  				ListMap.get(i).put("chatMold", userList.get(i).getUsername().substring(0, 50));
+  			if(userList.get(i).getUsername() != null) {
+  				if(userList.get(i).getUsername().length() > 50) {
+  	  				ListMap.get(i).put("chatMold", userList.get(i).getUsername().substring(0, 50));
+  	  			}
   			}
   		}
   		//System.out.println("test1:" + ListMap);

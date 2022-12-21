@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .userDetailsService(userService)
         .passwordEncoder(new BCryptPasswordEncoder());
         //.passwordEncoder(passwordEncoder());
-    	System.out.println(passwordEncoder().encode("5656"));
+    	System.out.println(passwordEncoder().encode("demo1017"));
     	
     	/*auth.inMemoryAuthentication()
     	.withUser("donguri")

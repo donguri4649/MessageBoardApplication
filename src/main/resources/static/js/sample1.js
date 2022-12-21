@@ -8,7 +8,31 @@ window.onload = function() {
 		var element = document.getElementById( "openStatus" ) ;
 		element.open = true ;
 	}
+	if(document.getElementById('kirikaeFlag').value == "1"){
+		$('.kirikae').prop('disabled',true);
+	}
 };
+
+$(function() {
+  $.ajax({
+      url: "/getAutoComplete",
+      type: "POST",
+      data: {
+        //note: $("#note").val(),
+        _csrf: $("*[name=_csrf]").val()  // CSRFトークンを送信
+      },dataType: "json"  // レスポンスデータをjson形式と指定する
+    })
+    .done(function(data) {
+		//alert(data);
+		$("#serchCreator").autocomplete({
+    		source:data
+  		});
+
+    })
+    .fail(function() {
+      alert("error!");
+    })
+});
 
 //ログアウト
 function logout(){
@@ -47,7 +71,7 @@ function deleta(selectdeleData, kubun){
 		var chk = document.getElementsByName("dengonchack");
 		var dengonId = document.getElementsByName("dengonId");
 		for(var i = 0;i < chk.length; i++){
-			if(chk[i].checked){
+			if(chk[i].checked && deletabotn[i].value == "1"){
 				if(allSelectData == ""){
 					allSelectData = dengonId[i].value;
 				}else{
@@ -259,30 +283,6 @@ function searchClear(){
 	document.getElementById('serchUpdateTime').value = "";
 }
 
-function janitorOffice(){
-	var UserInput = prompt("パスワードを入力して下さい。");
-	var pass = "%u958B%u3051%u30B4%u30DE";
-	
-	if(!UserInput){
-		return;
-	}
-	
-	if(UserInput == ""){
-		alert("パスワードを入力してください。");
-		return;
-	}
-	
-	if(!(UserInput == unescape(pass))){
-		alert("パスワードが間違っています。");
-		return;
-	}
-	
-	var target = document.getElementById("form02");
-	document.model.action = `janitorOffice`;
-    target.method = "post";
-    target.submit();
-}
-
 function inquiry(){
 	var lockId = "lockId";
 	
@@ -315,3 +315,31 @@ function inquiry(){
     form.method = "post";
     document.submit();
 }
+
+function sortTime(sortFlag){
+		switch(sortFlag) {
+			case "0":　//作成日　デフォルト
+			document.getElementById('createSortTime').value = "1";
+				break;
+			case "1":　//作成日　降順
+			document.getElementById('createSortTime').value = "2";
+				break;
+			case "2":　//作成日 昇順
+			document.getElementById('createSortTime').value = "0";
+				break;
+			case "3":　//更新日　デフォルト
+			document.getElementById('updateSortTime').value = "1";
+				break;
+			case "4":　//更新日 降順
+			document.getElementById('updateSortTime').value = "2";
+				break;
+			case "5":　//更新日 昇順
+			document.getElementById('updateSortTime').value = "0";
+				break;
+		}
+	var target = document.getElementById("form01");
+	document.model.action = `main`;
+    target.method = "post";
+    target.submit();
+}
+

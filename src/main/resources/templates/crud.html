@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 <title>伝言板</title>
 <link rel="stylesheet" href="css/sample1.css">
-<link rel="stylesheet" href="css/jquery-ui.min.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/datepicker.css">
+<script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
-<script src="js/jquery-3.6.1.min.js"></script>
+<script src="js/datepicker-ja.js"></script>
 <script src="js/common.js"></script>
 <script src="js/sample1.js"></script>
+<script src="js/Ajax.js"></script>
 <script src="ckeditor5-build-classic/ckeditor.js"></script>
 <script>
 	$(function() {
@@ -26,7 +29,7 @@
 	  </form>
 	  <form th:action="@{/janitorOffice}" method="" id="form02" name="">
 	  	<div th:if="${janitorOfficeFlag} == MANAGER">
-	  		<input type="button" value="管理人室" onclick="janitorOffice()"/>
+	  		<input type="button" class="" value="管理人室" onclick="passwordCert(1)"/>
         	<input type="hidden" name="userName" id="userName" th:value="${janitorUserName}">
         	<input type="hidden" name="userId" id="userId" th:value="${janitorUserId}">
 	  	</div>
@@ -58,9 +61,9 @@
 			作成者：
 			<p th:text="${creator}"></p>
 		</div>
-		<input type="button" value="送信" onclick="sousin()">
+		<input type="button" class="kirikae" value="送信" onclick="sousin()">
 		<h3 th:text="${title}">タイトル</h3>
-		<p th:if="${complete}" th:text="${complete}" 　style="color: blue"></p>
+		<p th:if="${complete}" th:text="${complete}" style="color: blue"></p>
 		<details id="openStatus">
 			<summary>
 				<strong>伝言を検索する。</strong>
@@ -86,11 +89,11 @@
 					</div>
 					<div class="metdata2">
 						<li><label for="serchCreateTime">作成日：</label> <input
-							type="date" class="datepicker" id="serchCreateTime"
+							type="text" class="datepicker" id="serchCreateTime" placeholder="YYYY/MM/DD"
 							name="serchCreateTime" th:value="${serchCreateTime}"><br>
 						</li>
 						<li><label for="serchUpdateTime">更新日：</label> <input
-							type="date" class="datepicker" id="serchUpdateTime"
+							type="text" class="datepicker" id="serchUpdateTime" placeholder="YYYY/MM/DD"
 							name="serchUpdateTime" th:value="${serchUpdateTime}"><br>
 						</li>
 					</div>
@@ -131,8 +134,7 @@
 			</div>
 		</div>
 		<!-- hidden項目 -->
-		<input type="hidden" name="userId" id="chatUserId"
-			th:value="${userId}">
+		<input type="hidden" name="userId" id="chatUserId" th:value="${userId}">
 		<!-- //操作区分操作区分(1:新規登録)(2:ページング)(3:削除)(4:参照)(5:編集)(6:検索) -->
 		<input type="hidden" name="operCategory" id="operCategory" th:value="${operCategory}"> 
 		<input type="hidden"name="userName" id="userName" th:value="${creator}"> 
@@ -141,6 +143,8 @@
 		<input type="hidden" name="referenceSelect" id="referenceSelect" value=""> 
 		<input type="hidden" name="searchEntry" id="searchEntry" th:value="${searchEntry}">
 		<input type="hidden" name="searchStatus" id="searchStatus" th:value="${searchStatus}">
+		<!-- 切替flag -->
+		<input type="hidden" name="kirikaeFlag" id="kirikaeFlag" th:value="${kirikaeFlag}">
 		<!-- hidden項目 -->
 		<div class="tableStyle">
 			<table border="1" th:nuless="${#lists.isEmpty(list)}"
@@ -168,17 +172,26 @@
 					<th>宛先</th>
 					<th>伝言内容</th>
 					<th>作成者</th>
-					<th>作成日</th>
-					<th>更新日</th>
+					<th>
+						<input type="hidden" name="createSortTime" id="createSortTime" th:value="${createSortTime}">
+						<div th:if="${createSort} == 0" class="timeTdSort" title="クリックすると降順になります。"><a href="javaScript:void (0)" onclick="sortTime('0')">作成日</a></div>
+						<div th:if="${createSort} == 1" class="timeTdSort" title="クリックすると昇順になります。"><a href="javaScript:void (0)" onclick="sortTime('1')">作成日▼</a></div>
+						<div th:if="${createSort} == 2" class="timeTdSort" title="クリックすると昇順降順を解除します。"><a href="javaScript:void (0)" onclick="sortTime('2')">作成日▲</a></div>
+					</th>
+					<th>
+						<input type="hidden" name="updateSortTime" id="updateSortTime" th:value="${updateSortTime}">
+						<div th:if="${updateSort} == 0" class="timeTdSort" title="クリックすると降順になります。"><a href="javaScript:void (0)" onclick="sortTime('3')">更新日</a></div>
+						<div th:if="${updateSort} == 1" class="timeTdSort" title="クリックすると昇順になります。"><a href="javaScript:void (0)" onclick="sortTime('4')">更新日▼</a></div>
+						<div th:if="${updateSort} == 2" class="timeTdSort" title="クリックすると昇順降順を解除します。"><a href="javaScript:void (0)" onclick="sortTime('5')">更新日▲</a></div>
+					</th>
 					<th class="button">編集</th>
 					<th class="button">参照</th>
 					<th class="button">削除</th>
 				</tr>
 				<tr th:each="obj : ${list}" align="center">
-					<td><input type="hidden" name="deletabotn" id="deletabotn"
-						th:value="${obj.active}"> <input type="hidden"
-						name="dengonId" id="dengonId" th:value="${obj.id}"> <input
-						type="hidden" name="chatText" id="chatText" th:value="${obj.chat}">
+					<td><input type="hidden" name="deletabotn" id="deletabotn" th:value="${obj.active}">
+					 	<input type="hidden" name="dengonId" id="dengonId" th:value="${obj.id}"> 
+					 	<input type="hidden" name="chatText" id="chatText" th:value="${obj.chat}">
 						<input type="checkbox" name="dengonchack" id="${center.index}">
 						<label for="${center.index}"></label></td>
 					<td class="userTd" th:text="${obj.address}"

@@ -63,6 +63,9 @@ public class ChatForm {
 	//送信フラグ
 	private String submitFlg;
 	
+	//切替flag
+	private String kirikaeFlag;
+	
 	/**********問い合わせ************/
 	
 	//メールアドレス
@@ -73,4 +76,9 @@ public class ChatForm {
 	
 	//当い合わせないよう
 	private String inquircontent;
+	
+	//更新ソート
+	private String updateSortTime;
+	//作成ソート
+	private String createSortTime;
 }
